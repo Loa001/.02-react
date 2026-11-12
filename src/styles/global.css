@@ -1,0 +1,197 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  line-height: 1.5;
+  min-height: 100vh;
+}
+
+a {
+  color: var(--cyan);
+  text-decoration: none;
+}
+
+h1, h2, h3 {
+  line-height: 1.2;
+}
+
+.gold {
+  color: var(--gold);
+}
+
+.muted {
+  color: var(--muted);
+}
+
+/* Botones */
+.btn {
+  display: inline-block;
+  padding: 12px 22px;
+  border-radius: 8px;
+  border: 1px solid transparent;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  transition: transform 0.15s, opacity 0.15s;
+  font-family: inherit;
+}
+
+.btn:hover {
+  transform: translateY(-1px);
+  opacity: 0.92;
+}
+
+.btn-gold {
+  background: linear-gradient(180deg, #e5c373, #c49a3e);
+  color: #1a1306;
+}
+
+.btn-outline {
+  background: transparent;
+  border-color: var(--line);
+  color: var(--text);
+}
+
+/* Tarjetas */
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 24px;
+}
+
+/* Formularios */
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-bottom: 18px;
+}
+
+.field label {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.field input,
+.field select {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  color: var(--text);
+  padding: 12px 14px;
+  font-size: 15px;
+  font-family: inherit;
+}
+
+.field input:focus,
+.field select:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+
+.field .error {
+  color: var(--error);
+  font-size: 13px;
+}
+
+/* Contenedor centrado */
+.container {
+  width: min(1120px, 100% - 32px);
+  margin-inline: auto;
+}
+/* Barra de navegación */
+.navbar {
+  border-bottom: 1px solid var(--line);
+  background: rgba(7, 11, 20, 0.9);
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.navbar-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px 0;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.navbar-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.navbar-links a {
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.navbar-links a.active {
+  color: var(--gold);
+}
+
+.navbar-links a.btn {
+  color: #1a1306;
+}
+
+/* Páginas */
+.page {
+  padding: 48px 0;
+}
+
+/* Portada */
+.hero {
+  padding: 90px 0 60px;
+}
+
+.hero h1 {
+  font-size: clamp(36px, 6vw, 60px);
+  margin-top: 18px;
+}
+
+.hero-text {
+  font-size: 18px;
+  max-width: 560px;
+  margin-top: 18px;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 30px;
+}
+
+.badge {
+  display: inline-block;
+  padding: 5px 12px;
+  border-radius: 999px;
+  background: rgba(46, 139, 255, 0.15);
+  color: var(--cyan);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* Celulares */
+@media (max-width: 640px) {
+  .navbar-links {
+    gap: 14px;
+  }
+
+  .navbar-links a:not(.btn) {
+    font-size: 14px;
+  }
+}
