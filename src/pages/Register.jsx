@@ -9,9 +9,10 @@ const FORMULARIO_VACIO = { nombre: '', riotId: '', posicion: '', servidor: '' }
 
 function validar(datos) {
   const errores = {}
+  const nombre = datos.nombre.trim()
 
-  if (datos.nombre.trim().length < 3) {
-    errores.nombre = 'El nombre debe tener al menos 3 caracteres.'
+  if (nombre.length < 3 || nombre.length > 30) {
+    errores.nombre = 'El nombre debe tener entre 3 y 30 caracteres.'
   }
   if (!esRiotIdValido(datos.riotId)) {
     errores.riotId = 'Usa el formato Nombre#TAG, por ejemplo Kairo#LAN1.'
@@ -30,38 +31,54 @@ function Register() {
   const { registrarJugador } = usePlayer()
   const [datos, setDatos] = useState(FORMULARIO_VACIO)
   const [errores, setErrores] = useState({})
-  const [registrado, setRegistrado] = useState(false)
+  const [errorGeneral, setErrorGeneral] = useState('')
+  const [enviando, setEnviando] = useState(false)
+  const [registrado, setRegistrado] = useState(null)
 
   function manejarCambio(evento) {
     const { name, value } = evento.target
     setDatos({ ...datos, [name]: value })
   }
 
-  function manejarEnvio(evento) {
+  async function manejarEnvio(evento) {
     evento.preventDefault()
+    setErrorGeneral('')
 
     const nuevosErrores = validar(datos)
     setErrores(nuevosErrores)
     if (Object.keys(nuevosErrores).length > 0) return
 
-    registrarJugador({
-      ...datos,
-      nombre: datos.nombre.trim(),
-      riotId: datos.riotId.trim(),
-    })
-    setRegistrado(true)
+    setEnviando(true)
+    try {
+      const jugador = await registrarJugador({
+        ...datos,
+        nombre: datos.nombre.trim(),
+        riotId: datos.riotId.trim(),
+      })
+      setRegistrado(jugador)
+    } catch (error) {
+      if (error.errores) {
+        setErrores(error.errores)
+      } else if (error.estado === 409) {
+        setErrores({ riotId: error.message })
+      } else {
+        setErrorGeneral(error.message)
+      }
+    } finally {
+      setEnviando(false)
+    }
   }
 
-    if (registrado) {
+  if (registrado) {
     return (
       <section className="container page">
         <div className="card form-card success-card">
           <div className="success-icon">✓</div>
           <h2>¡Registro exitoso!</h2>
           <p className="muted">
-            Tu perfil de jugador <b>{datos.riotId}</b> fue creado. Inicia sesión para ver tu panel.
+            Tu perfil de jugador <b>{registrado.riotId}</b> fue guardado. Inicia sesión para ver tu panel.
           </p>
-          <Link to="/login" state={{ riotId: datos.riotId.trim() }} className="btn btn-gold">
+          <Link to="/login" state={{ riotId: registrado.riotId }} className="btn btn-gold">
             Iniciar sesión
           </Link>
         </div>
@@ -75,10 +92,12 @@ function Register() {
         <h2>Registro de jugador</h2>
         <p className="muted form-subtitle">Completa tus datos para crear tu perfil en RiftSchedule.</p>
 
+        {errorGeneral && <div className="alert alert-error">{errorGeneral}</div>}
+
         <form onSubmit={manejarEnvio} noValidate>
           <div className="field">
             <label htmlFor="nombre">Nombre del jugador</label>
-            <input id="nombre" name="nombre" value={datos.nombre} onChange={manejarCambio} placeholder="Ej.: Fernando" />
+            <input id="nombre" name="nombre" value={datos.nombre} onChange={manejarCambio} placeholder="Ej.: Fernando" maxLength={30} />
             {errores.nombre && <span className="error">{errores.nombre}</span>}
           </div>
 
@@ -108,7 +127,9 @@ function Register() {
             </div>
           </div>
 
-          <button type="submit" className="btn btn-gold btn-full">Registrarme</button>
+          <button type="submit" className="btn btn-gold btn-full" disabled={enviando}>
+            {enviando ? 'Registrando…' : 'Registrarme'}
+          </button>
         </form>
       </div>
     </section>

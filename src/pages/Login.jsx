@@ -9,8 +9,9 @@ function Login() {
   const location = useLocation()
   const [riotId, setRiotId] = useState(location.state?.riotId ?? '')
   const [error, setError] = useState('')
+  const [enviando, setEnviando] = useState(false)
 
-  function manejarEnvio(evento) {
+  async function manejarEnvio(evento) {
     evento.preventDefault()
 
     if (!esRiotIdValido(riotId)) {
@@ -18,12 +19,15 @@ function Login() {
       return
     }
 
-    if (!iniciarSesion(riotId)) {
-      setError('No hay un jugador registrado con ese Riot ID en esta sesión.')
-      return
+    setEnviando(true)
+    try {
+      await iniciarSesion(riotId.trim())
+      navigate('/dashboard')
+    } catch (err) {
+      setError(err.message)
+    } finally {
+      setEnviando(false)
     }
-
-    navigate('/dashboard')
   }
 
   return (
@@ -47,14 +51,16 @@ function Login() {
             {error && <span className="error">{error}</span>}
           </div>
 
-          <button type="submit" className="btn btn-gold btn-full">Ingresar</button>
+          <button type="submit" className="btn btn-gold btn-full" disabled={enviando}>
+            {enviando ? 'Ingresando…' : 'Ingresar'}
+          </button>
         </form>
 
         <p className="form-footer muted">
           ¿No tienes cuenta? <Link to="/registro">Regístrate</Link>
         </p>
         <p className="note">
-          Acceso de prueba del Sprint 1: la autenticación con correo y contraseña se implementará en el Sprint 2.
+          Acceso de prueba: el jugador se busca en la base de datos por su Riot ID. La autenticación con contraseña se implementará en el Sprint 3.
         </p>
       </div>
     </section>

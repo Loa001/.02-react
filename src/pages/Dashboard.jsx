@@ -40,7 +40,8 @@ function Dashboard() {
             <div><dt>Posición</dt><dd>{jugador.posicion}</dd></div>
             <div><dt>Servidor</dt><dd>{jugador.servidor}</dd></div>
           </dl>
-          <p className="note">Datos guardados temporalmente durante esta sesión.</p>
+            <p className="note">Datos guardados en la base de datos de RiftSchedule.
+           </p>
         </div>
 
         <div className="modules">
